@@ -1,6 +1,4 @@
-class Question:
-
-    def __init__(self, text, options, answer):
+class Question:class answer):
         self.text = text
         self.options = options
         self.answer = answer.upper()
