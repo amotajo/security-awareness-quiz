@@ -1,0 +1,11 @@
+Question,OptionA,OptionB,OptionC,OptionD,Answer
+What is phishing?,Fake emails trying to steal information,Firewall,Antivirus,Encryption,A
+What is a strong password?,Short and simple,Easy to remember,Long and complex with symbols,Same as other passwords,C
+What should you do if you receive a suspicious email?,Click the link,Reply to the sender,Report it to IT,Ignore it,C
+What is two-factor authentication?,Two emails,Extra security step,Password reset,VPN connection,B
+What is social engineering?,Programming technique,Human manipulation attack,Antivirus scan,Encryption method,B
+Which is the safest way to manage passwords?,Write them down,Reuse passwords,Use a password manager,Share with colleagues,C
+What should you do before clicking a link?,Click quickly,Reply first,Hover over and check the link,Ignore always,C
+How can you identify an external email?,No subject,[EXTERNAL] before the subject line,Short message,Always spam,B
+What should you do if you suspect a data breach?,Ignore it,Report immediately,Delete files,Restart system,B
+What is the best practice for passwords?,Reuse the same password,Share with colleagues,Use unique passwords for each account,Use your name,C
