@@ -1,6 +1,8 @@
 The aim of this project is to develop a Python-based GUI quiz application for internal staff that supports security awareness training through multiple-choice questions, result tracking, and CSV-based data storage.
 
+
 ```mermaid
+%%{init: {'theme':'default'} }%%
 flowchart TD
     A([Start]) --> B[See welcome screen]
     B --> C[/Enter name/]
@@ -26,6 +28,7 @@ flowchart TD
 ```
 
 ```mermaid
+%%{init: {'theme':'default'} }%%
 flowchart TD
     A([app.py starts]) --> B[init_state: set default session state values]
     B --> C{screen == 'welcome'?}
