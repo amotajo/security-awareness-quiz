@@ -33,6 +33,7 @@ def get_file_path(filename):
     """
     if os.path.isabs(filename):
         return filename
+
     base_dir = os.path.dirname(__file__)
     return os.path.join(base_dir, filename)
 
@@ -51,6 +52,7 @@ def load_questions(filename):
     """
     filepath = get_file_path(filename)
 
+    # Check the file exists before trying to open it
     if not os.path.exists(filepath):
         raise QuestionFileError(
             f'The questions file could not be found: {filename}'
@@ -74,14 +76,24 @@ def load_questions(filename):
                 questions.append(Question(text, options, answer))
 
     except KeyError as error:
+        # A column was missing from the CSV header
         raise QuestionFileError(
             f'The questions file is missing a required column: {error}'
         )
-    except (OSError, csv.Error) as error:
+
+    except OSError as error:
+        # The file could not be opened or read
         raise QuestionFileError(
             f'The questions file could not be read: {error}'
         )
 
+    except csv.Error as error:
+        # The CSV is malformed
+        raise QuestionFileError(
+            f'The questions file could not be read: {error}'
+        )
+
+    # If we got here but no rows were parsed, the file is empty
     if not questions:
         raise QuestionFileError('The questions file is empty.')
 
@@ -112,6 +124,7 @@ def save_result(filename, name, score, total, percentage):
         with open(filepath, mode='a', newline='', encoding='utf-8') as file:
             writer = csv.DictWriter(file, fieldnames=fieldnames)
 
+            # Write the header if this is the first time we are writing
             if not file_exists or os.path.getsize(filepath) == 0:
                 writer.writeheader()
 
@@ -122,6 +135,7 @@ def save_result(filename, name, score, total, percentage):
                 'Percentage': percentage,
                 'Timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             })
+
     except OSError as error:
         raise ResultSaveError(
             f'The result could not be saved: {error}'

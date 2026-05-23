@@ -2,14 +2,12 @@
 
 import os
 import streamlit as st
-import matplotlib.pyplot as plt
 
 from quiz import Quiz
 from storage import load_questions, save_result, get_file_path
 from storage import QuestionFileError, ResultSaveError
 from validation import is_present, is_valid_name, is_answer_selected
 
-backgroundColor="#FFA421"
 
 # --- Set up session state with default values ---
 def init_state():
@@ -23,6 +21,9 @@ def init_state():
 # --- Helper for showing each answer option as 'A. Option text' ---
 def format_option(letter, question):
     """Return a label like 'A. Fake emails trying to steal information'."""
+    if letter == '-- Select an answer --':
+        return letter
+
     letters = ['A', 'B', 'C', 'D']
     position = letters.index(letter)
     return f'{letter}. {question.options[position]}'
@@ -50,9 +51,11 @@ if st.session_state.screen == 'welcome':
             st.error('⚠️ Names may only contain letters, spaces, hyphens and apostrophes.')
 
         else:
+            # Try to load the questions from the CSV file
             try:
                 questions = load_questions('questions.csv')
 
+                # If loading worked, set up the quiz and move to the quiz screen
                 st.session_state.quiz = Quiz(questions)
                 st.session_state.name = name.title()
                 st.session_state.screen = 'quiz'
@@ -78,24 +81,31 @@ elif st.session_state.screen == 'quiz':
 
         st.write(question.text)
 
-        # Radio buttons. index=None means nothing is pre-selected,
-        # so the user must actively choose an option.
-        selected = st.radio(
+        # The select-box options. The first item is a placeholder
+        # so the user has to actively choose A, B, C or D.
+        options = ['-- Select an answer --', 'A', 'B', 'C', 'D']
+
+        # A small helper function so the select-box can show
+        # 'A. Fake emails...' next to each letter.
+        def label_option(letter):
+            return format_option(letter, question)
+
+        selected = st.selectbox(
             '👉 Choose your answer',
-            ['A', 'B', 'C', 'D'],
-            index=None,
-            format_func=lambda letter: format_option(letter, question)
+            options,
+            format_func=label_option
         )
 
         if st.button('✅ Submit Answer'):
 
-            if selected is None or not is_answer_selected(selected):
+            if not is_answer_selected(selected):
                 st.error('⚠️ Please select an answer before continuing.')
 
             else:
                 quiz.check_answer(selected)
                 quiz.next_question()
 
+                # If that was the last question, move to the end screen
                 if not quiz.has_more_questions():
                     st.session_state.screen = 'end'
 
@@ -112,23 +122,10 @@ elif st.session_state.screen == 'end':
     st.balloons()
 
     st.metric('🏆 Final Score', f'{quiz.score} / {quiz.total_questions()}')
-
-    # Pie chart showing correct vs incorrect
-    correct = quiz.score
-    incorrect = quiz.total_questions() - quiz.score
-
-    figure, axis = plt.subplots()
-    axis.pie(
-        [correct, incorrect],
-        labels=['Correct', 'Incorrect'],
-        colors=['#4CAF50', '#F44336'],
-        autopct='%1.1f%%'
-    )
-    st.pyplot(figure)
-
     st.metric('📊 Percentage Score', f'{percentage}%')
 
-    # Save the result once per completion
+    # Save the result once per completion (so refreshing the page
+    # does not save the same score twice).
     if not st.session_state.saved:
         try:
             save_result(
@@ -146,7 +143,7 @@ elif st.session_state.screen == 'end':
     else:
         st.info('💾 Your result has been saved.')
 
-    # Download button for staff to export results
+    # Download button: lets staff export the results CSV
     results_path = get_file_path('results.csv')
 
     if os.path.exists(results_path):
