@@ -9,6 +9,8 @@ from storage import load_questions, save_result, get_file_path
 from storage import QuestionFileError, ResultSaveError
 from validation import is_present, is_valid_name, is_answer_selected
 
+[theme]
+backgroundColor="#FFA421"
 
 # --- Set up session state with default values ---
 def init_state():
