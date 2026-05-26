@@ -76,7 +76,7 @@ elif st.session_state.screen == 'quiz':
 
         question = quiz.get_current_question()
 
-    st.subheader(
+        st.subheader(
             f'📝 Question {quiz.current_index + 1} of {quiz.total_questions()}'
         )
 
@@ -85,6 +85,7 @@ elif st.session_state.screen == 'quiz':
         st.progress(progress)
 
         st.write(question.text)
+
         # The select-box options. The first item is a placeholder
         # so the user has to actively choose A, B, C or D.
         options = ['-- Select an answer --', 'A', 'B', 'C', 'D']
@@ -115,8 +116,6 @@ elif st.session_state.screen == 'quiz':
 
                 st.rerun()
 
-
-# --- End screen ---
 # --- End screen ---
 elif st.session_state.screen == 'end':
 
