@@ -7,7 +7,8 @@ In an environment of this scale, and one such as IBM, working with clients invol
 This project quiz is a Minimum Viable Product addressing the common areas in which security incidents are prevalent, and the points raised in the SyOps' that IBMers should take into serious consideration. It is a ten-question multiple-choice quiz covering phishing, password hygiene, social engineering, email safety, and breach reporting. Built in Python using the Streamlit framework, the application loads questions from a CSV file, presents them one at a time, validates user input, scores responses, visualises the result, and persists each completion to a downloadable CSV. The scope is deliberately small and simple because it is an MVP, intended to act as a proof-of-concept for how internally-built quizzes and learning tools could be developed within IBM to complement existing training.
 
 ## 2. Design
-
+![Welcome screen design](Quiz Flow.png)
+*Figure 1 — Welcome screen. [Your caption.]*
 ### 2.1 GUI Design
 
 ![Welcome screen design](assets/SAQ.png)
