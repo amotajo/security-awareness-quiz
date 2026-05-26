@@ -99,3 +99,236 @@ classDiagram
 *Figure 7 — Class diagram of the domain model.*
 
 [Your ~100-word design rationale paragraph here]
+
+## 3. Development
+
+### 3.1 Architecture Overview
+
+[Short paragraph: ~80 words. Describe the layered structure of your project — GUI on top, domain logic in the middle, pure functions at the bottom. Mention that the dependency direction is deliberate so core logic can be tested without Streamlit or the filesystem.]
+
+### 3.2 Domain Model — `models.py`
+
+[Short paragraph: ~80 words. What the Question class does. Why it has no dependencies on Streamlit or CSV. Why case-insensitive comparison.]
+
+```python
+class Question:
+    def __init__(self, text, options, answer):
+        self.text = text
+        self.options = options
+        self.answer = answer.upper()
+
+    def is_correct(self, user_answer):
+        return user_answer.upper() == self.answer
+```
+
+### 3.3 Quiz Session — `quiz.py`
+
+[Short paragraph: ~80 words. What the Quiz class does. Composition over inheritance — Quiz HAS Questions. Why the zero-questions guard in calculate_percentage.]
+
+```python
+class Quiz:
+    def __init__(self, questions):
+        self.questions = questions
+        self.score = 0
+        self.current_index = 0
+
+    def check_answer(self, user_answer):
+        if self.get_current_question().is_correct(user_answer):
+            self.score += 1
+            return True
+        return False
+
+    def calculate_percentage(self):
+        if self.total_questions() == 0:
+            return 0
+        return round((self.score / self.total_questions()) * 100, 2)
+```
+
+### 3.4 Validation — `validation.py`
+
+[Short paragraph: ~80 words. Define "pure function". Why purity matters for testing. Mention the for-loop in is_valid_name uses only beginner concepts.]
+
+```python
+def is_present(value):
+    return bool(value.strip())
+
+
+def is_valid_name(name):
+    name = name.strip()
+    if not name:
+        return False
+    for character in name:
+        if not character.isalpha() and character != ' ' and character != '-' and character != "'":
+            return False
+    return True
+
+
+def is_answer_selected(answer):
+    return answer in ['A', 'B', 'C', 'D']
+```
+
+### 3.5 Storage — `storage.py`
+
+[Short paragraph: ~120 words. Custom exception classes — explain why they exist (the brief requires exception handling). Separation of concerns — storage raises, UI catches. Three failure modes covered: file missing, columns missing, file empty.]
+
+```python
+class QuestionFileError(Exception):
+    """Raised when the questions CSV file cannot be loaded or is malformed."""
+
+
+class ResultSaveError(Exception):
+    """Raised when a quiz result cannot be saved to disk."""
+```
+
+### 3.6 GUI — `app.py`
+
+[Short paragraph: ~100 words. Screen state machine: 'welcome' / 'quiz' / 'end'. Why this beats a boolean flag. The `init_state()` setdefault pattern — Streamlit re-runs the whole script on each interaction so the function is idempotent. The `saved` flag prevents duplicate result writes on refresh.]
+
+```python
+def init_state():
+    """Set default values in session state if they are missing."""
+    st.session_state.setdefault('screen', 'welcome')
+    st.session_state.setdefault('name', '')
+    st.session_state.setdefault('quiz', None)
+    st.session_state.setdefault('saved', False)
+```
+
+---
+
+## 4. Testing
+
+### 4.1 Testing Strategy
+
+[Paragraph 1 — ~80 words. Two testing approaches: automated unit tests for pure logic, manual exploratory tests for the GUI. Why pure functions get automated tests (no mocking needed). Why GUI tests are manual (Streamlit's reactivity is hard to test automatically).]
+
+[Paragraph 2 — ~60 words. TDD-style approach: tests written alongside the pure functions to force clean signatures.]
+
+[Paragraph 3 — ~60 words. Tool choice: pytest over unittest. Cleaner assertions, no class boilerplate. Hyperlink to pytest docs.]
+
+### 4.2 Manual Test Results
+
+| ID | Scenario | Steps | Expected | Actual | Pass/Fail |
+|---|---|---|---|---|---|
+| M1 | Empty name | Click "Start Quiz" with blank name field | Error message shown; quiz does not start | As expected | ✅ |
+| M2 | Name with numbers | Enter "John123"; click "Start Quiz" | Error message shown; quiz does not start | As expected | ✅ |
+| M3 | Hyphenated name accepted | Enter "Mary-Jane"; click "Start Quiz" | Quiz starts on Question 1 | As expected | ✅ |
+| M4 | Submit without answer | On Question 1, click "Submit Answer" without selecting | Error message shown; question does not advance | As expected | ✅ |
+| M5 | Correct answer scores | Select the correct option; submit | Score increments; advances to next question | As expected | ✅ |
+| M6 | Incorrect answer does not score | Select a wrong option; submit | Score unchanged; advances to next question | As expected | ✅ |
+| M7 | End screen displays | Complete all 10 questions | Score, percentage, pie chart, and download button visible | As expected | ✅ |
+| M8 | Result persisted to CSV | Complete a quiz; open `results.csv` | New row containing name, score, total, percentage, timestamp | As expected | ✅ |
+| M9 | No duplicate save on refresh | Complete a quiz; refresh the end screen | Exactly one new row in `results.csv` | As expected | ✅ |
+| M10 | Missing questions file | Rename `questions.csv`; restart app; attempt to start a quiz | Friendly error message; application does not crash | As expected | ✅ |
+| M11 | Restart resets state | Click "Restart Quiz" on the end screen | Returns to welcome screen; name field cleared | As expected | ✅ |
+| M12 | Download button works | Click "Download all results"; check Downloads folder | `results.csv` downloaded containing all rows | As expected | ✅ |
+
+### 4.3 Unit Test Results
+
+![pytest results](assets/pytest-results.png)
+*Figure 8 — Full unit test run. 25 tests across three modules pass in under a second.*
+
+[Short paragraph — ~80 words. What the unit test suite covers across the three test files: validation, models, quiz. Mention the breakdown of edge cases tested.]
+
+### 4.4 Reflection on Test Coverage
+
+[Short paragraph — ~80 words. What is NOT tested: Streamlit GUI, CSV write itself, deployment behaviour. Mention Streamlit's official testing API would be a natural extension.]
+
+---
+
+## 5. Documentation
+
+### 5.1 User Documentation
+
+The quiz is designed to be used without training. The full user journey takes under three minutes.
+
+**Step 1.** Open the quiz URL in any modern web browser.
+
+![Step 1 screenshot](assets/user-step-1.png)
+
+**Step 2.** Enter your full name in the text field and click **Start Quiz**. If the field is left blank or contains numbers or special characters, an error message will appear and the quiz will not start.
+
+![Step 2 screenshot](assets/user-step-2.png)
+
+**Step 3.** For each question, read the question text and the four options carefully. Select one option (A, B, C, or D), then click **Submit Answer**. The next question will appear automatically.
+
+![Step 3 screenshot](assets/user-step-3.png)
+
+**Step 4.** After ten questions, your final score is displayed alongside a percentage and a pie chart showing the proportion of correct and incorrect answers.
+
+![Step 4 screenshot](assets/user-step-4.png)
+
+**Step 5.** Managers only: click **Download all results (CSV)** to download the cumulative results file. This contains a row for every completed quiz, including names, scores, and timestamps.
+
+**Step 6.** Click **Restart Quiz** to begin again from the welcome screen.
+
+### 5.2 Technical Documentation
+
+#### Prerequisites
+
+- Python 3.9 or above
+- pip
+- (Optional but recommended) a virtual environment
+
+#### Running locally
+
+```bash
+git clone https://github.com/amotajo/security-awareness-quiz.git
+cd security-awareness-quiz
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+The application will open in your default browser at `http://localhost:8501`.
+
+#### Running the test suite
+
+```bash
+pytest tests/ -v
+```
+
+All 25 tests should pass.
+
+#### Project structure
+
+| File / folder | Purpose |
+|---|---|
+| `app.py` | Streamlit GUI; screen state machine and event handling |
+| `models.py` | `Question` domain class |
+| `quiz.py` | `Quiz` session class |
+| `storage.py` | CSV read/write and custom exception classes |
+| `validation.py` | Pure input-validation functions |
+| `tests/` | pytest unit tests for the three core modules |
+| `questions.csv` | Quiz content; editable without code changes |
+| `results.csv` | Auto-generated log of completed quiz results |
+| `requirements.txt` | Python dependencies |
+| `assets/` | Figma frames, flowchart, screenshots used in this README |
+
+#### Adding new questions
+
+Append a row to `questions.csv` with the following columns:
+
+| Column | Description |
+|---|---|
+| `Question` | The question text shown to the user |
+| `OptionA` to `OptionD` | The four multiple-choice options |
+| `Answer` | The correct option letter (`A`, `B`, `C`, or `D`) |
+
+#### Deployment
+
+The application is deployed on [Streamlit Community Cloud](https://streamlit.io/cloud) and redeploys automatically on every push to the `main` branch. To deploy a new instance, sign in at [share.streamlit.io](https://share.streamlit.io), select the GitHub repository, set the main file path to `app.py`, and click **Deploy**.
+
+---
+
+## 6. Evaluation
+
+### 6.1 What Went Well
+
+[Paragraph — ~100 words. Pick 2-3 specific things that genuinely worked. Examples to draw from: separating pure validation into its own module made testing easy; custom exception classes made the UI error-handling clean; the screen state machine pattern was easier to extend than a boolean flag.]
+
+### 6.2 What Was Harder Than Expected
+
+[Paragraph — ~100 words. Be honest. Examples: Streamlit's full-script re-run model took time to internalise; the duplicate-save bug only surfaced when testing the deployed app and needed the `saved` flag fix; writing GUI tests is genuinely hard and I chose manual testing as a deliberate scoping decision.]
+
+### 6.3 What Could Be Improved
+
+[Paragraph — ~100 words. List 3-4 concrete future improvements. Examples: question randomisation; per-user history would need a database instead of flat CSV; authentication via single sign-on; Streamlit Community Cloud's ephemeral filesystem means results.csv resets on restart — a hosted database would solve this; adopting Streamlit's testing API for GUI coverage.]
