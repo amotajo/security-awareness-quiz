@@ -11,24 +11,24 @@ This project quiz is a Minimum Viable Product addressing the common areas in whi
 ### 2.1 GUI Design
 
 ![Welcome screen design](assets/SAQ.png)
-*Figure 1 — Welcome screen. [Your caption.]*
+*Figure 1 — Welcome screen. The welcome screen displays a single name input and a 'Start Quiz' button, with the intention to minimise friction and allow staff to have a swift start.*
 
 ![Welcome screen with error message](assets/SAQE.png)
-*Figure 2 — Welcome screen showing the validation error when an invalid name is entered. [Your caption.]*
+*Figure 2 — Welcome screen with error. On the same page, if the user fails to meet the requirements of putting in a valid name, by either just pressing enter or using the wrong characters, an inline error sign will appear rather than a popup (such as the one you would get if you used tkinter), which is less disruptive and lets users stay in their flow.*
 
 ![Quiz question screen design](assets/SAQQ.png)
-*Figure 3 — Quiz question screen. [Your caption.]*
+*Figure 3 — Quiz question screen. The quiz question screen was designed with the intent of not overwhelming the user, which is done by presenting one question at a time with four radio button options that are lettered to reduce the risk of confusion, and also a progress bar at the top.*
 
 ![Quiz screen with error message](assets/SAQQE.png)
-*Figure 4 — Quiz screen showing the validation error when no answer is selected. [Your caption.]*
+*Figure 4 — Quiz screen with error. The inline error message that appears again on this page is consistent with the errors on the start page, creating a familiar experience and interface for the user.*
 
 ![End screen design](assets/SAQR.png)
-*Figure 5 — End screen with score, percentage, and pie chart. [Your caption.]*
+*Figure 5 — End screen. The end screen presents the results in three different ways, as users like to interpret and understand data differently. It is presented as a score, percentage, and pie chart, with download and restart actions co-located underneath so no extra navigation is needed.*
 
 ### 2.2 User Journey
 
 ![User journey flowchart](assets/user-flow.png)
-*Figure 6 — User journey flowchart. [Your caption.]*
+*Figure 6 — User journey flowchart. The user journey flowchart is used to depict the typical experience a user should have throughout the quiz, with three loops: name re-entry on invalid input, question repetition until completion, and optional restart from the end screen.*
 
 ### 2.3 Functional Requirements
 
