@@ -1,6 +1,8 @@
 """Streamlit GUI for the Security Awareness Quiz."""
+
 import os
 import streamlit as st
+import matplotlib.pyplot as plt
 
 from quiz import Quiz
 from storage import load_questions, save_result, get_file_path
@@ -129,9 +131,10 @@ elif st.session_state.screen == 'end':
     axis.set_facecolor('none')
     axis.pie(
         [quiz.score, quiz.total_questions() - quiz.score],
-        labels=['Correct', 'Incorrect']
+        labels=['Correct', 'Incorrect'],
+        colors=['#4CAF50', '#F44336']
     )
-    st.pyplot(figure)
+    st.pyplot(figure)    st.pyplot(figure)
 
     st.metric('📊 Percentage Score', f'{percentage}%')
 
