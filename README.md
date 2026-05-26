@@ -98,8 +98,7 @@ classDiagram
 ```
 *Figure 7 — Class diagram of the domain model.*
 
-[Your ~100-word design rationale paragraph here]
-
+The Question class is the representation of one single multiple-choice question. What it does is store the question, the answer options, and the correct answer, and it provides a method (is_correct) that checks whether a given user answer matches the correct one. The Quiz class, on the other hand, has the role of essentially collecting all the relevant information for the quiz score that you see at the end: the current index, the score you are on, how many are right, what number you are on, incrementing the score, and much more. If I had paired these two classes together, it would have made the whole process easier, as the class would be storing the data of the questions and running the quiz, and it would have limitations on checking correct answers. Whereas using two classes allows us to give each class a singular responsibility, and certain functions can be unit-tested without the need of a Quiz object. It also improves the readability for whoever is reading the code. Neither class depends on Streamlit, CSV files, or any input/output mechanism. This is a deliberate design choice that means the classes can be unit-tested in isolation without launching the app, and the core quiz logic could be reused in a future command-line or Flask version of the app without modification.
 ## 3. Development
 
 ### 3.1 Architecture Overview
