@@ -2,26 +2,22 @@
 
 ### 2.1 GUI Design
 
-[Figma screenshot 1 — welcome]
+### 2.1 GUI Design
+
+![Welcome screen design](assets/SAQ.png)
 *Figure 1 — Welcome screen. [Your caption.]*
-![Figma Screenshot](file:///Users/abiolamotajo/Downloads/mac-SAQ.png)
 
-[Figma screenshot 1 — welcome error]
-*Figure 1 — Welcome error. [Your caption.]*
-![Figma Screenshot](file:///Users/abiolamotajo/Downloads/mac-SAQE.png)
+![Welcome screen with error message](assets/SAQE.png)
+*Figure 2 — Welcome screen showing the validation error when an invalid name is entered. [Your caption.]*
 
-[Figma screenshot 2 — quiz]
-*Figure 2 — Question screen. [Your caption.]*
-![Figma Screenshot](file:///Users/abiolamotajo/Downloads/mac-SAQQ.png)
+![Quiz question screen design](assets/SAQQ.png)
+*Figure 3 — Quiz question screen. [Your caption.]*
 
-[Figma screenshot 2 — quiz error]
-*Figure 2 — Question screen error. [Your caption.]*
-![Figma Screenshot](file:///Users/abiolamotajo/Downloads/mac-SAQQE.png)
+![Quiz screen with error message](assets/SAQQE.png)
+*Figure 4 — Quiz screen showing the validation error when no answer is selected. [Your caption.]*
 
-[Figma screenshot 3 — end]
-*Figure 3 — End screen. [Your caption.]*
-![Figma Screenshot](file:///Users/abiolamotajo/Downloads/mac-SAQR.png)
-
+![End screen design](assets/SAQR.png)
+*Figure 5 — End screen with score, percentage, and pie chart. [Your caption.]*
 ### 2.2 User Journey
 
 [Your draw.io flowchart PNG]
