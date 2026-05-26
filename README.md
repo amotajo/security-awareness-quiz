@@ -4,23 +4,23 @@
 
 [Figma screenshot 1 — welcome]
 *Figure 1 — Welcome screen. [Your caption.]*
-![Figma Screenshot](abiolamotajo/SAQ.png)
+![Figma Screenshot](file:///Users/abiolamotajo/Downloads/mac-SAQ.png)
 
 [Figma screenshot 1 — welcome error]
 *Figure 1 — Welcome error. [Your caption.]*
-![Figma Screenshot](abiolamotajo/SAQE.png)
+![Figma Screenshot](file:///Users/abiolamotajo/Downloads/mac-SAQE.png)
 
 [Figma screenshot 2 — quiz]
 *Figure 2 — Question screen. [Your caption.]*
-![Figma Screenshot](abiolamotajo/SAQQ.png)
+![Figma Screenshot](file:///Users/abiolamotajo/Downloads/mac-SAQQ.png)
 
 [Figma screenshot 2 — quiz error]
 *Figure 2 — Question screen error. [Your caption.]*
-![Figma Screenshot](abiolamotajo/SAQQE.png)
+![Figma Screenshot](file:///Users/abiolamotajo/Downloads/mac-SAQQE.png)
 
 [Figma screenshot 3 — end]
 *Figure 3 — End screen. [Your caption.]*
-![Figma Screenshot](file:///Users/abiolamotajo/Downloads/mac-saqr.png)
+![Figma Screenshot](file:///Users/abiolamotajo/Downloads/mac-SAQR.png)
 
 ### 2.2 User Journey
 
