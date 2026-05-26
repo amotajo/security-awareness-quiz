@@ -103,11 +103,21 @@ The Question class is the representation of one single multiple-choice question.
 
 ### 3.1 Architecture Overview
 
-[Short paragraph: ~80 words. Describe the layered structure of your project — GUI on top, domain logic in the middle, pure functions at the bottom. Mention that the dependency direction is deliberate so core logic can be tested without Streamlit or the filesystem.]
+The project is structured into three layers. The GUI layer (`app.py`) sits at the top and handles everything the user sees and interacts with. The domain logic layer (`quiz.py` and `models.py`) sits in the middle and manages the quiz session and individual questions. The pure utility layer (`validation.py` and the helpers in `storage.py`) sits at the bottom and handles validation and file input/output. This dependency direction is deliberate: the layers underneath have no knowledge of Streamlit or the filesystem, which means the core logic can be unit-tested in isolation without launching the app.
+
+```mermaid
+flowchart TD
+    A[app.py - Streamlit GUI] --> B[quiz.py - Quiz class]
+    A --> C[storage.py - CSV I/O]
+    A --> D[validation.py - pure functions]
+    B --> E[models.py - Question class]
+    C --> E
+```
+*Figure 8 — Module dependency graph.*
 
 ### 3.2 Domain Model — `models.py`
 
-[Short paragraph: ~80 words. What the Question class does. Why it has no dependencies on Streamlit or CSV. Why case-insensitive comparison.]
+The Question class encapsulates a single multiple-choice question. It stores the question text, the four answer options, and the correct answer letter, and provides a single method (`is_correct`) that checks whether a given user answer matches. The answer is stored as uppercase via `.upper()`, and the comparison in `is_correct` also uppercases the user's input. This is a small piece of defensive programming: if the CSV is edited and someone writes 'b' instead of 'B', the system still behaves correctly. The class has no dependencies on Streamlit or the filesystem, which is what makes it trivially unit-testable in `tests/test_models.py`.
 
 ```python
 class Question:
@@ -122,7 +132,7 @@ class Question:
 
 ### 3.3 Quiz Session — `quiz.py`
 
-[Short paragraph: ~80 words. What the Quiz class does. Composition over inheritance — Quiz HAS Questions. Why the zero-questions guard in calculate_percentage.]
+The Quiz class composes a list of Question objects and manages an entire quiz session. It tracks two pieces of state during the session: the running score, and the index of the current question. Rather than duplicating the correctness-checking logic, `check_answer` delegates to the Question class itself by calling `is_correct` on the current question. This is composition: the Quiz *has* Questions and asks each one to evaluate itself. The guard in `calculate_percentage` returns zero when there are no questions, preventing a division-by-zero crash and surfacing as a sensible default rather than an exception.
 
 ```python
 class Quiz:
@@ -145,7 +155,7 @@ class Quiz:
 
 ### 3.4 Validation — `validation.py`
 
-[Short paragraph: ~80 words. Define "pure function". Why purity matters for testing. Mention the for-loop in is_valid_name uses only beginner concepts.]
+All three functions in this module are pure: given the same input, they always return the same output, and they produce no side effects. This purity matters for two reasons. First, the brief specifically requires testable logic exemplified by pure functions, and `validation.py` is the dedicated home for these. Second, purity makes unit tests trivial: there is no need to mock the filesystem, the network, or the Streamlit session state. Each test in `tests/test_validation.py` simply passes a value in and asserts on the return. The `is_valid_name` function uses a plain for-loop and `.isalpha()` to check each character, which keeps the implementation at a beginner level without resorting to regex.
 
 ```python
 def is_present(value):
@@ -168,7 +178,7 @@ def is_answer_selected(answer):
 
 ### 3.5 Storage — `storage.py`
 
-[Short paragraph: ~120 words. Custom exception classes — explain why they exist (the brief requires exception handling). Separation of concerns — storage raises, UI catches. Three failure modes covered: file missing, columns missing, file empty.]
+The storage layer defines two custom exception classes: `QuestionFileError` for problems loading the questions, and `ResultSaveError` for problems saving the results. Defining domain-specific exceptions means the GUI layer can catch errors by name (and by meaning), rather than parsing the strings of generic `Exception` objects. This is a standard separation of concerns: the storage layer *raises* exceptions describing what went wrong, and the GUI layer *catches* them and decides how to present the error to the user via `st.error`. `load_questions` handles three failure modes explicitly: the file is missing, a required column is missing, or the file is empty. Each one raises `QuestionFileError` with a clear message, which the GUI then surfaces to the user.
 
 ```python
 class QuestionFileError(Exception):
@@ -181,7 +191,7 @@ class ResultSaveError(Exception):
 
 ### 3.6 GUI — `app.py`
 
-[Short paragraph: ~100 words. Screen state machine: 'welcome' / 'quiz' / 'end'. Why this beats a boolean flag. The `init_state()` setdefault pattern — Streamlit re-runs the whole script on each interaction so the function is idempotent. The `saved` flag prevents duplicate result writes on refresh.]
+The Streamlit application is structured as a screen state machine, with three explicit screens: `welcome`, `quiz`, and `end`. Each screen lives in its own `if` branch, and transitions happen by setting `st.session_state.screen` to the next screen name. Streamlit re-runs the entire script on every user interaction, so `init_state` uses `setdefault` to set default values only if the keys are missing. This idempotent pattern means state is not clobbered on every re-run. The `saved` flag is a small but important reliability detail: without it, refreshing the end screen would trigger `save_result` a second time and produce a duplicate row in `results.csv`. Guarding on the flag ensures each completion writes exactly one row.
 
 ```python
 def init_state():
@@ -191,7 +201,6 @@ def init_state():
     st.session_state.setdefault('quiz', None)
     st.session_state.setdefault('saved', False)
 ```
-
 ---
 
 ## 4. Testing
