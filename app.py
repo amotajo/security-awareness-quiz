@@ -76,12 +76,15 @@ elif st.session_state.screen == 'quiz':
 
         question = quiz.get_current_question()
 
-        st.subheader(
+    st.subheader(
             f'📝 Question {quiz.current_index + 1} of {quiz.total_questions()}'
         )
 
-        st.write(question.text)
+        # Progress bar showing how far through the quiz the user is
+        progress = (quiz.current_index + 1) / quiz.total_questions()
+        st.progress(progress)
 
+        st.write(question.text)
         # The select-box options. The first item is a placeholder
         # so the user has to actively choose A, B, C or D.
         options = ['-- Select an answer --', 'A', 'B', 'C', 'D']
