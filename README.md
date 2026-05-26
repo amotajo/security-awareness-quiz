@@ -20,7 +20,7 @@
 
 [Figma screenshot 3 — end]
 *Figure 3 — End screen. [Your caption.]*
-![Figma Screenshot](abiolamotajo/Results.png)
+![Figma Screenshot](file:///Users/abiolamotajo/Downloads/mac-saqr.png)
 
 ### 2.2 User Journey
 
