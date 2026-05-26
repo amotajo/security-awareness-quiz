@@ -1,5 +1,14 @@
 """Streamlit GUI for the Security Awareness Quiz."""
 
+mkdir -p .streamlit
+cat > .streamlit/config.toml << 'EOF'
+[theme]
+backgroundColor = "#6A0DAD"
+secondaryBackgroundColor = "#9B30FF"
+textColor = "#FFFFFF"
+primaryColor = "#D8BFD8"
+EOF
+
 import os
 import streamlit as st
 
