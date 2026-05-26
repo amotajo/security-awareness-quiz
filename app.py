@@ -112,6 +112,7 @@ elif st.session_state.screen == 'quiz':
 
 
 # --- End screen ---
+# --- End screen ---
 elif st.session_state.screen == 'end':
 
     quiz = st.session_state.quiz
@@ -121,6 +122,17 @@ elif st.session_state.screen == 'end':
     st.balloons()
 
     st.metric('🏆 Final Score', f'{quiz.score} / {quiz.total_questions()}')
+
+    # Pie chart showing correct vs incorrect
+    figure, axis = plt.subplots()
+    figure.patch.set_alpha(0)
+    axis.set_facecolor('none')
+    axis.pie(
+        [quiz.score, quiz.total_questions() - quiz.score],
+        labels=['Correct', 'Incorrect']
+    )
+    st.pyplot(figure)
+
     st.metric('📊 Percentage Score', f'{percentage}%')
 
     # Save the result once per completion (so refreshing the page
