@@ -134,7 +134,7 @@ elif st.session_state.screen == 'end':
         labels=['Correct', 'Incorrect'],
         colors=['#4CAF50', '#F44336']
     )
-    st.pyplot(figure)    st.pyplot(figure)
+    st.pyplot(figure)
 
     st.metric('📊 Percentage Score', f'{percentage}%')
 
