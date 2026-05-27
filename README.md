@@ -247,19 +247,21 @@ The quiz is designed to be used without training. The full user journey takes un
 
 **Step 1.** Open the quiz URL in any modern web browser.
 
-![Step 1 screenshot](assets/user-step-1.png)
+![Welcome screen](assets/user-step-1.png)
 
 **Step 2.** Enter your full name in the text field and click **Start Quiz**. If the field is left blank or contains numbers or special characters, an error message will appear and the quiz will not start.
 
-![Step 2 screenshot](assets/user-step-2.png)
+![Welcome screen with empty-name error](assets/user-step-2a.png)
+![Welcome screen with invalid-name error](assets/user-step-2b.png)
 
-**Step 3.** For each question, read the question text and the four options carefully. Select one option (A, B, C, or D), then click **Submit Answer**. The next question will appear automatically.
+**Step 3.** For each question, read the question text and the four options carefully. Select one option (A, B, C, or D), then click **Submit Answer**. The next question will appear automatically. If you click **Submit Answer** without selecting an option, an inline error will appear and the question will not advance.
 
-![Step 3 screenshot](assets/user-step-3.png)
+![Quiz question screen](assets/user-step-3.png)
+![Quiz screen with no-answer error](assets/user-step-3b.png)
 
 **Step 4.** After ten questions, your final score is displayed alongside a percentage and a pie chart showing the proportion of correct and incorrect answers.
 
-![Step 4 screenshot](assets/user-step-4.png)
+![End screen with score and pie chart](assets/user-step-4.png)
 
 **Step 5.** Managers only: click **Download all results (CSV)** to download the cumulative results file. This contains a row for every completed quiz, including names, scores, and timestamps.
 
