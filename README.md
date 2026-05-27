@@ -103,8 +103,7 @@ The Question class is the representation of one single multiple-choice question.
 
 ### 3.1 Architecture Overview
 
-The project is structured into three layers. The GUI layer (`app.py`) sits at the top and handles everything the user sees and interacts with. The domain logic layer (`quiz.py` and `models.py`) sits in the middle and manages the quiz session and individual questions. The pure utility layer (`validation.py` and the helpers in `storage.py`) sits at the bottom and handles validation and file input/output. This dependency direction is deliberate: the layers underneath have no knowledge of Streamlit or the filesystem, which means the core logic can be unit-tested in isolation without launching the app.
-
+For this quiz I have five layered modules. The module that sits at the top of all of them is app.py. This is the main module: it talks to the other four and gathers the information from them. The middle layer, quiz.py and models.py, handles the quiz session and the individual questions within it. Lastly, the final layers sit at the bottom: validation.py handles input validation through pure functions, and storage.py handles reading questions from and writing results to CSV files. Neither bottom layer depends on Streamlit or any of the layers above them, which means they can be unit-tested in isolation without launching the app.
 ```mermaid
 flowchart TD
     A[app.py - Streamlit GUI] --> B[quiz.py - Quiz class]
@@ -117,7 +116,7 @@ flowchart TD
 
 ### 3.2 Domain Model — `models.py`
 
-The Question class encapsulates a single multiple-choice question. It stores the question text, the four answer options, and the correct answer letter, and provides a single method (`is_correct`) that checks whether a given user answer matches. The answer is stored as uppercase via `.upper()`, and the comparison in `is_correct` also uppercases the user's input. This is a small piece of defensive programming: if the CSV is edited and someone writes 'b' instead of 'B', the system still behaves correctly. The class has no dependencies on Streamlit or the filesystem, which is what makes it trivially unit-testable in `tests/test_models.py`.
+The Question class represents a single multiple-choice question and stores all three pieces of data: the text, the options, and the answer. It provides one method, is_correct, which checks whether a given user answer matches the stored correct answer. The class also uses .upper() to store the correct answer as uppercase. In practice, the selectbox in app.py already restricts the user's answer to 'A', 'B', 'C' or 'D', so the user-side .upper() is mostly redundant. However, the CSV file is hand-editable, so storing the answer as uppercase defends against any future edits to questions.csv where the answer letter might be entered in lowercase. The class has no dependencies on Streamlit or the filesystem, which is what makes it trivially unit-testable in tests/test_models.py
 
 ```python
 class Question:
@@ -132,7 +131,7 @@ class Question:
 
 ### 3.3 Quiz Session — `quiz.py`
 
-The Quiz class composes a list of Question objects and manages an entire quiz session. It tracks two pieces of state during the session: the running score, and the index of the current question. Rather than duplicating the correctness-checking logic, `check_answer` delegates to the Question class itself by calling `is_correct` on the current question. This is composition: the Quiz *has* Questions and asks each one to evaluate itself. The guard in `calculate_percentage` returns zero when there are no questions, preventing a division-by-zero crash and surfacing as a sensible default rather than an exception.
+The Quiz class composes a list of Question objects and manages an entire quiz session. It job is to  tracks both the the running score, and the index of the current question during these sessions. Rather than duplicating the correctness-checking logic, `check_answer` delegates to the Question class itself by calling `is_correct` on the current question. This is composition: the Quiz *has* Questions and asks each one to evaluate itself. The guard in `calculate_percentage` returns zero when there are no questions, preventing a division-by-zero crash and surfacing as a sensible default rather than an exception.
 
 ```python
 class Quiz:
