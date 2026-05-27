@@ -86,18 +86,15 @@ elif st.session_state.screen == 'quiz':
 
         st.write(question.text)
 
-        # The select-box options. The first item is a placeholder
-        # so the user has to actively choose A, B, C or D.
-        options = ['-- Select an answer --', 'A', 'B', 'C', 'D']
-
-        # A small helper function so the select-box can show
+        # A small helper function so the radio options can show
         # 'A. Fake emails...' next to each letter.
         def label_option(letter):
             return format_option(letter, question)
 
-        selected = st.selectbox(
+        selected = st.radio(
             '👉 Choose your answer',
-            options,
+            ['A', 'B', 'C', 'D'],
+            index=None,
             format_func=label_option
         )
 
