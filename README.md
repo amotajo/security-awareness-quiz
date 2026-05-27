@@ -237,8 +237,7 @@ def init_state():
 
 ### 4.4 Reflection on Test Coverage
 
-[Short paragraph — ~80 words. What is NOT tested: Streamlit GUI, CSV write itself, deployment behaviour. Mention Streamlit's official testing API would be a natural extension.]
-
+The `tests/` folder's purpose is to cover the pure logic of my application and contains tests for `validation.py`, `models.py`, and `quiz.py`. On the other hand, `app.py` is only tested whilst the app is being run, by interacting with the quiz rather than through automated tests. The test for saving results is checked by seeing whether the latest attempt was saved to the `results.csv` file once downloaded. Deployment behaviour on Streamlit Community Cloud is also confirmed by a manual smoke test in a browser, rather than through an automated test. A natural extension would be to adopt [Streamlit's testing API](https://docs.streamlit.io/develop/api-reference/app-testing) to bring GUI tests into the automated suite.
 ---
 
 ## 5. Documentation
