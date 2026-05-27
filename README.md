@@ -131,7 +131,7 @@ class Question:
 
 ### 3.3 Quiz Session — `quiz.py`
 
-The Quiz class composes a list of Question objects and manages an entire quiz session. It job is to  tracks both the the running score, and the index of the current question during these sessions. Rather than duplicating the correctness-checking logic, `check_answer` delegates to the Question class itself by calling `is_correct` on the current question. This is composition: the Quiz *has* Questions and asks each one to evaluate itself. The guard in `calculate_percentage` returns zero when there are no questions, preventing a division-by-zero crash and surfacing as a sensible default rather than an exception.
+The Quiz's job is to manage the whole quiz session. It holds a list of Question objects and tracks two things during the session: the running score, and which question you are currently on (the current index). When the user submits an answer, the `check_answer` method does not check the answer itself; instead, it asks the current Question to check itself by calling `is_correct`. This is composition: the Quiz has Questions and lets each Question evaluate its own answer, which means the correctness logic only lives in one place. The `calculate_percentage` method also has a small safety net: if there are zero questions, it returns 0 instead of trying to divide by zero, which would otherwise crash the app.
 
 ```python
 class Quiz:
@@ -154,7 +154,7 @@ class Quiz:
 
 ### 3.4 Validation — `validation.py`
 
-All three functions in this module are pure: given the same input, they always return the same output, and they produce no side effects. This purity matters for two reasons. First, the brief specifically requires testable logic exemplified by pure functions, and `validation.py` is the dedicated home for these. Second, purity makes unit tests trivial: there is no need to mock the filesystem, the network, or the Streamlit session state. Each test in `tests/test_validation.py` simply passes a value in and asserts on the return. The `is_valid_name` function uses a plain for-loop and `.isalpha()` to check each character, which keeps the implementation at a beginner level without resorting to regex.
+A pure function is one where the same input always results in the same output, and it has no other effects on data. Examples of these are present in my `validation.py` module: all three functions are pure, as given the same input they always return the same output. This means each test is just one line: pass an input, check the output. No mocking, no fixtures, no setup. The `is_valid_name` function uses a plain for-loop and `.isalpha()` to check each character. This keeps the implementation at a beginner level, rather than using regex to check whether each character is a letter, space, hyphen, or apostrophe.
 
 ```python
 def is_present(value):
@@ -177,7 +177,7 @@ def is_answer_selected(answer):
 
 ### 3.5 Storage — `storage.py`
 
-The storage layer defines two custom exception classes: `QuestionFileError` for problems loading the questions, and `ResultSaveError` for problems saving the results. Defining domain-specific exceptions means the GUI layer can catch errors by name (and by meaning), rather than parsing the strings of generic `Exception` objects. This is a standard separation of concerns: the storage layer *raises* exceptions describing what went wrong, and the GUI layer *catches* them and decides how to present the error to the user via `st.error`. `load_questions` handles three failure modes explicitly: the file is missing, a required column is missing, or the file is empty. Each one raises `QuestionFileError` with a clear message, which the GUI then surfaces to the user.
+The `storage.py` module has two main roles: loading up the questions from `questions.csv`, and saving each attempt to `results.csv`. It defines two custom exception classes, `QuestionFileError` and `ResultSaveError`, one for each job. Using my own error types means `app.py` only needs to catch one named error per job, instead of guessing between several built-in ones from Python. This is separation of concerns: `storage.py` handles files and raises errors with clear messages, while `app.py` handles the user and shows those messages on screen using `st.error`. The purpose of the `load_questions` function is to check for three specific failures: the file is missing, a required column is missing, or the file is empty. Each failure raises `QuestionFileError` with a message that the GUI then outputs to the user.
 
 ```python
 class QuestionFileError(Exception):
@@ -189,8 +189,7 @@ class ResultSaveError(Exception):
 ```
 
 ### 3.6 GUI — `app.py`
-
-The Streamlit application is structured as a screen state machine, with three explicit screens: `welcome`, `quiz`, and `end`. Each screen lives in its own `if` branch, and transitions happen by setting `st.session_state.screen` to the next screen name. Streamlit re-runs the entire script on every user interaction, so `init_state` uses `setdefault` to set default values only if the keys are missing. This idempotent pattern means state is not clobbered on every re-run. The `saved` flag is a small but important reliability detail: without it, refreshing the end screen would trigger `save_result` a second time and produce a duplicate row in `results.csv`. Guarding on the flag ensures each completion writes exactly one row.
+The `app.py` module is in charge of the three state screens: `welcome`, `quiz`, and `end`. Each has its own `if` branch, and transitions happen by setting `st.session_state.screen` to the next screen's name. This is cleaner than using a boolean flag because adding a new screen later is just one more branch, not another flag. Where Streamlit comes in is that it re-runs the entire script from the top every time the user interacts with the page, which is why the `init_state()` function uses `setdefault` to prevent the state from resetting. The `saved` flag is a small but important reliability detail: without it, refreshing the end screen would call `save_result` a second time, duplicating a row in `results.csv`. Guarding on the flag ensures each completion writes exactly one row.
 
 ```python
 def init_state():
