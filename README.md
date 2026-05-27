@@ -233,7 +233,7 @@ def init_state():
 ![pytest results](assets/pytest-results.png)
 *Figure 9 — Full unit test run. 25 tests across three modules pass in under a second.*
 
-[Short paragraph — ~80 words. What the unit test suite covers across the three test files: validation, models, quiz. Mention the breakdown of edge cases tested.]
+As shown in Figure 9, all 25 tests run and pass in 0.02 seconds. They are being tested across three different files: `tests/test_validation.py` (11 tests), `tests/test_models.py` (5 tests), and `tests/test_quiz.py` (9 tests). Each test file targets its respective module. The validation tests cover edge cases such as typing a name with numbers, leaving the field empty, or using lowercase answer letters, all of which prevent the user from progressing. The model tests cover Question creation and case-insensitive correctness checking. Lastly, the quiz tests cover the structure of the quiz, such as starting on a score of zero and calculating the score correctly throughout.
 
 ### 4.4 Reflection on Test Coverage
 
