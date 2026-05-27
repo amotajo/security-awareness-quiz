@@ -231,13 +231,15 @@ def init_state():
 ### 4.3 Unit Test Results
 
 ![pytest results](assets/pytest-results.png)
-*Figure 8 — Full unit test run. 25 tests across three modules pass in under a second.*
+*Figure 9 — Full unit test run. 25 tests across three modules pass in under a second.*
 
 [Short paragraph — ~80 words. What the unit test suite covers across the three test files: validation, models, quiz. Mention the breakdown of edge cases tested.]
 
 ### 4.4 Reflection on Test Coverage
 
-The `tests/` folder's purpose is to cover the pure logic of my application and contains tests for `validation.py`, `models.py`, and `quiz.py`. On the other hand, `app.py` is only tested whilst the app is being run, by interacting with the quiz rather than through automated tests. The test for saving results is checked by seeing whether the latest attempt was saved to the `results.csv` file once downloaded. Deployment behaviour on Streamlit Community Cloud is also confirmed by a manual smoke test in a browser, rather than through an automated test. A natural extension would be to adopt [Streamlit's testing API](https://docs.streamlit.io/develop/api-reference/app-testing) to bring GUI tests into the automated suite.## 5. Documentation
+The `tests/` folder's purpose is to cover the pure logic of my application and contains tests for `validation.py`, `models.py`, and `quiz.py`. On the other hand, `app.py` is only tested whilst the app is being run, by interacting with the quiz rather than through automated tests. The test for saving results is checked by seeing whether the latest attempt was saved to the `results.csv` file once downloaded. Deployment behaviour on Streamlit Community Cloud is also confirmed by a manual smoke test in a browser, rather than through an automated test. A natural extension would be to adopt [Streamlit's testing API](https://docs.streamlit.io/develop/api-reference/app-testing) to bring GUI tests into the automated suite.
+
+## 5. Documentation
 
 ### 5.1 User Documentation
 
