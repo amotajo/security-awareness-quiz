@@ -205,11 +205,11 @@ def init_state():
 
 ### 4.1 Testing Strategy
 
-[Paragraph 1 — ~80 words. Two testing approaches: automated unit tests for pure logic, manual exploratory tests for the GUI. Why pure functions get automated tests (no mocking needed). Why GUI tests are manual (Streamlit's reactivity is hard to test automatically).]
+The two approaches I used were: automated unit tests for the pure logic, and manual exploratory tests for the Streamlit GUI. The pure functions in `validation.py`, `models.py`, and `quiz.py` can be tested with a single input/output check, with no need to mock the filesystem or session state. The Streamlit GUI in `app.py` is tested manually by walking through the user flow, because Streamlit's full-script re-run model would make automated GUI tests disproportionate for an MVP.
 
-[Paragraph 2 — ~60 words. TDD-style approach: tests written alongside the pure functions to force clean signatures.]
+The pure functions were developed with a test-driven mindset. Tests for `is_present`, `is_valid_name`, and `is_answer_selected` were written alongside the implementations rather than after, which forced clean, narrow function signatures that take a single value and return a single result.
 
-[Paragraph 3 — ~60 words. Tool choice: pytest over unittest. Cleaner assertions, no class boilerplate. Hyperlink to pytest docs.]
+I chose [pytest](https://docs.pytest.org) over Python's built-in `unittest` module. pytest uses plain `assert` statements and does not require tests to be wrapped in classes, which keeps the test files shorter, easier to read, and easier for a beginner to maintain.
 
 ### 4.2 Manual Test Results
 
